@@ -1,17 +1,23 @@
-// Import the necessary modules
 const express = require('express');
+const path = require('path');
 
-// Create an Express application
 const app = express();
-const port = 3000; // You can choose any available port
+const PORT = 3000;
 
-// Define a route for the root URL ('/')
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.get('/', (req, res) => {
-  // Send a JSON response with the message "Hello, World!"
-  res.json({ message: 'Proxy is running!' });
+  try {
+    // Read the content of the local index.html file
+    const indexPath = path.join(__dirname, 'public', 'index.html');
+    res.sendFile(indexPath);
+  } catch (error) {
+    console.error('Error reading index.html:', error.message);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
-// Start the server and listen on the specified port
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
